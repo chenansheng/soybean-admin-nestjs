@@ -35,7 +35,14 @@ export default defineConfig(configEnv => {
       host: '0.0.0.0',
       port: 9527,
       open: true,
-      proxy: createViteProxy(viteEnv, enableProxy)
+      // proxy: createViteProxy(viteEnv, enableProxy)
+      proxy: {
+      '/proxy-default': {
+        target: 'http://127.0.0.1:9528/', // 目标服务器地址
+        changeOrigin: true, // 是否改变源地址
+        rewrite: (path) => path.replace(/^\/proxy-default/, ''), // 重写路径
+      },
+    },
     },
     preview: {
       port: 9725

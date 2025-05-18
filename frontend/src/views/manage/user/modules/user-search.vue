@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { enableStatusOptions } from '@/constants/business';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { translateOptions } from '@/utils/common';
-import { $t } from '@/locales';
+import {computed, ref, shallowRef} from 'vue';
+import {enableStatusOptions} from '@/constants/business';
+import {useFormRules, useNaiveForm} from '@/hooks/common/form';
+import {translateOptions} from '@/utils/common';
+import {$t} from '@/locales';
+import EnableStatus = Api.Common.EnableStatus;
 
 defineOptions({
   name: 'UserSearch'
@@ -19,7 +20,7 @@ const emit = defineEmits<Emits>();
 const { formRef, validate, restoreValidation } = useNaiveForm();
 
 const model = defineModel<Api.SystemManage.UserSearchParams>('model', { required: true });
-
+const statusList = shallowRef<EnableStatus[]>([]);
 type RuleKey = Extract<keyof Api.SystemManage.UserSearchParams, 'email' | 'phoneNumber'>;
 
 const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
@@ -39,6 +40,10 @@ async function reset() {
 async function search() {
   await validate();
   emit('search');
+}
+
+function handleStatusChange(value: EnableStatus[]) {
+  model.value.status = value.length > 0 ? value.join(',') : null;
 }
 </script>
 
@@ -60,10 +65,12 @@ async function search() {
         </NFormItemGi>
         <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.userStatus')" path="userStatus" class="pr-24px">
           <NSelect
-            v-model:value="model.status"
+            v-model:value="statusList"
             :placeholder="$t('page.manage.user.form.userStatus')"
             :options="translateOptions(enableStatusOptions)"
+            multiple
             clearable
+            @update:value="handleStatusChange"
           />
         </NFormItemGi>
         <NFormItemGi span="24 m:12" class="pr-24px">

@@ -297,5 +297,5 @@ export async function fetchGetRoleApiEndpoints(roleCode: string) {
     method: 'get'
   });
   const casbinRules = response.data || [];
-  return casbinRules.map(item => `${item.v1}:${item.v2}`);
+  return casbinRules.map(item => `${item.v2}:${item.v3}`);
 }

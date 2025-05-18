@@ -55,10 +55,9 @@ async function getApiEndpointId() {
 
 /** recursive api-endpoint tree data, add prefix transform treeOption format */
 function recursive(item: Api.SystemManage.ApiEndpoint): TreeOption {
-  const key =
-    item.resource && item.action && item.resource.trim() && item.action.trim()
-      ? `${item.resource}:${item.action}`
-      : item.id;
+const key = item.path && item.method && item.path.trim() && item.method.trim()
+  ? `${item.path}:${item.method}`
+  : item.id;
 
   let label = item.summary || item.path || item.controller;
   label += ` (${item.method})`;
